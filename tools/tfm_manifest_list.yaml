@@ -99,6 +99,20 @@
       }
     },
     {
+      "description": "TFM ADAC Partition",
+      "manifest": "../secure_fw/partitions/adac/tfm_adac.yaml",
+      "output_path": "secure_fw/partitions/adac",
+      "conditional": "TFM_PARTITION_ADAC",
+      "version_major": 0,
+      "version_minor": 1,
+      "pid": 290,
+      "linker_pattern": {
+        "library_list": [
+           "*tfm_*partition_adac.*"
+         ]
+      }
+    },
+    {
       "description": "TFM Initial Attestation Partition",
       "manifest": "../secure_fw/partitions/initial_attestation/tfm_initial_attestation.yaml",
       "output_path": "secure_fw/partitions/initial_attestation",

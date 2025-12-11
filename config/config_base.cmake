@@ -43,9 +43,10 @@ set(MBEDCRYPTO_GIT_REMOTE               "https://github.com/Mbed-TLS/mbedtls.git
 set(MCUBOOT_PATH                        "DOWNLOAD"  CACHE PATH      "Path to MCUboot (or DOWNLOAD to fetch automatically")
 set(MCUBOOT_VERSION                     "v2.2.0"    CACHE STRING    "The version of MCUboot to use")
 
-set(PLATFORM_PSA_ADAC_SECURE_DEBUG      FALSE       CACHE BOOL      "Whether to use psa-adac secure debug.")
-set(PLATFORM_PSA_ADAC_SOURCE_PATH       "DOWNLOAD"  CACHE PATH      "Path to source dir of psa-adac.")
-set(PLATFORM_PSA_ADAC_VERSION           "819a254"   CACHE STRING    "The version of psa-adac to use.")
+set(PLATFORM_PSA_ADAC_SECURE_DEBUG TRUE CACHE BOOL "Whether to use psa-adac secure debug.")
+set(PLATFORM_PSA_ADAC_SOURCE_PATH "DOWNLOAD" CACHE PATH "Path to source dir of psa-adac.")
+set(PLATFORM_PSA_ADAC_VERSION psa-adac-testing CACHE STRING "The version of psa-adac to use." FORCE)
+set(PLATFORM_PSA_ADAC_GIT_REMOTE https://github.com/degjorva/psa-adac.git CACHE STRING "The URL to retrieve psa-adac from." FORCE)
 set(PLATFORM_RAM_FS                     OFF         CACHE BOOL      "Enables the use of RAM instead of the persistent storage device to store the FS in Secure Storage services")
 
 set(PLATFORM_IS_FVP                     FALSE       CACHE BOOL      "Whether to enable FVP or FPGA build of the platform.")

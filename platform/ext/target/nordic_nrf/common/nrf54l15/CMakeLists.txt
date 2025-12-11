@@ -35,6 +35,12 @@ target_sources(platform_s
 target_compile_definitions(platform_s
     PUBLIC
         NRF_SKIP_FICR_NS_COPY_TO_RAM
+        $<$<BOOL:${PLATFORM_PSA_ADAC_SECURE_DEBUG}>:PLATFORM_PSA_ADAC_SECURE_DEBUG>
+)
+
+target_link_libraries(platform_s
+    PRIVATE
+        $<$<BOOL:${PLATFORM_PSA_ADAC_SECURE_DEBUG}>:trusted-firmware-m-psa-adac>
 )
 
 #========================= tfm_spm ============================================#
