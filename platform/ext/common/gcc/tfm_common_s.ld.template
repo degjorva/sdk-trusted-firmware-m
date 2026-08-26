@@ -350,12 +350,35 @@ SECTIONS
     Image$$PT_RO_END$$Base = .;
 
 #if defined(CONFIG_PSA_NEED_CRACEN_KMU_DRIVER)
-    .nrf_kmu_reserved_push_area S_DATA_START (NOLOAD):
+    /* Destination area for CRACEN KMU key push operations.
+     *
+     * The destination address is written into the provisioned KMU slot
+     * metadata, so it can never change once a device has been provisioned. It
+     * must stay in sync with the kmu_push_area node in the Zephyr SoC
+     * devicetree, which reserves the same area for builds without TF-M.
+     *
+     * A platform may override either value before including this script.
+     */
+#ifndef NRF_KMU_PUSH_AREA_BASE
+#define NRF_KMU_PUSH_AREA_BASE S_DATA_START
+#endif
+#ifndef NRF_KMU_PUSH_AREA_SIZE
+#define NRF_KMU_PUSH_AREA_SIZE 0x60
+#endif
+    .nrf_kmu_reserved_push_area NRF_KMU_PUSH_AREA_BASE (NOLOAD):
     {
         __nrf_kmu_reserved_push_area = .;
         *(.nrf_kmu_reserved_push_area)
         __nrf_kmu_reserved_push_area_end = .;
+        /* Claim the whole area even when the input section is empty, so that
+         * secure data can never be placed where the KMU pushes keys.
+         */
+        . = __nrf_kmu_reserved_push_area + NRF_KMU_PUSH_AREA_SIZE;
     } > RAM
+    ASSERT(__nrf_kmu_reserved_push_area == NRF_KMU_PUSH_AREA_BASE,
+           "The KMU push area is not at the address the KMU pushes keys to.")
+    ASSERT(__nrf_kmu_reserved_push_area_end - __nrf_kmu_reserved_push_area <= NRF_KMU_PUSH_AREA_SIZE,
+           "The KMU push area is too small for the data placed in it.")
 #endif /* CONFIG_PSA_NEED_CRACEN_KMU_DRIVER */
 
     /**** Base address of secure data area */
