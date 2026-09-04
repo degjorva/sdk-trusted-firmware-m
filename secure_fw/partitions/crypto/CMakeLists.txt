@@ -179,7 +179,14 @@ set(TF_PSA_CRYPTO_TARGET_PREFIX crypto_service_)
 # TF_PSA_CRYPTO_BUILD_TYPE must be set manually here
 set(SAVED_BUILD_TYPE ${CMAKE_BUILD_TYPE})
 set(CMAKE_BUILD_TYPE ${TF_PSA_CRYPTO_BUILD_TYPE})
-add_subdirectory(${ZEPHYR_NRF_MODULE_DIR}/subsys/nrf_security/tfm ${CMAKE_CURRENT_BINARY_DIR}/tfpsacrypto EXCLUDE_FROM_ALL)
+# NRF_SECURITY_DIR is supplied by the NCS PSA integration module through
+# TFM_EXTRA_CONFIG_PATH. Fall back to the historical in-tree location.
+if(NRF_SECURITY_DIR)
+    set(NRF_SECURITY_TFM_DIR ${NRF_SECURITY_DIR}/tfm)
+else()
+    set(NRF_SECURITY_TFM_DIR ${ZEPHYR_NRF_MODULE_DIR}/subsys/nrf_security/tfm)
+endif()
+add_subdirectory(${NRF_SECURITY_TFM_DIR} ${CMAKE_CURRENT_BINARY_DIR}/tfpsacrypto EXCLUDE_FROM_ALL)
 set(CMAKE_BUILD_TYPE ${SAVED_BUILD_TYPE})
 
 if(NOT TARGET ${TF_PSA_CRYPTO_TARGET_PREFIX}tfpsacrypto)

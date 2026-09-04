@@ -78,7 +78,7 @@ enum tfm_hal_status_t tfm_hal_its_aead_generate_nonce(uint8_t *nonce,
     }
 
     if (g_enc_counter == 0) {
-        psa_status_t status =  cracen_get_random(NULL, g_enc_nonce_seed, sizeof(g_enc_nonce_seed));
+        psa_status_t status =  cracen_psa_get_random(NULL, g_enc_nonce_seed, sizeof(g_enc_nonce_seed));
         if (status != PSA_SUCCESS) {
             return TFM_HAL_ERROR_GENERIC;
         }
@@ -152,34 +152,34 @@ psa_status_t tfm_hal_its_get_aead(struct tfm_hal_its_auth_crypt_ctx *ctx,
     psa_set_key_bits(&attributes, PSA_BYTES_TO_BITS(CHACHA20_KEY_SIZE));
 
     if (encrypt) {
-        status = cracen_aead_encrypt_setup(&operation, &attributes, key_out, sizeof(key_out), TFM_ITS_AEAD_ALG);
+        status = cracen_psa_aead_encrypt_setup(&operation, &attributes, key_out, sizeof(key_out), TFM_ITS_AEAD_ALG);
     } else {
-        status = cracen_aead_decrypt_setup(&operation, &attributes, key_out, sizeof(key_out), TFM_ITS_AEAD_ALG);
+        status = cracen_psa_aead_decrypt_setup(&operation, &attributes, key_out, sizeof(key_out), TFM_ITS_AEAD_ALG);
     }
 
     if (status != PSA_SUCCESS) {
         return status;
     }
 
-    status = cracen_aead_set_nonce(&operation, ctx->nonce, ctx->nonce_size);
+    status = cracen_psa_aead_set_nonce(&operation, ctx->nonce, ctx->nonce_size);
     if (status != PSA_SUCCESS) {
         return status;
     }
 
-    status = cracen_aead_update_ad(&operation, ctx->aad, ctx->aad_size);
+    status = cracen_psa_aead_update_ad(&operation, ctx->aad, ctx->aad_size);
     if (status != PSA_SUCCESS) {
         return status;
     }
 
-    status = cracen_aead_update(&operation, input, input_size, output, output_size, &out_length);
+    status = cracen_psa_aead_update(&operation, input, input_size, output, output_size, &out_length);
     if (status != PSA_SUCCESS) {
         return status;
     }
 
     if (encrypt) {
-        status = cracen_aead_finish(&operation, output + out_length, output_size - out_length, &out_length, tag, tag_size, &tag_length);
+        status = cracen_psa_aead_finish(&operation, output + out_length, output_size - out_length, &out_length, tag, tag_size, &tag_length);
     } else {
-        status = cracen_aead_verify(&operation, output + out_length, output_size - out_length, &out_length , tag, tag_size);
+        status = cracen_psa_aead_verify(&operation, output + out_length, output_size - out_length, &out_length , tag, tag_size);
     }
 
     return status;
